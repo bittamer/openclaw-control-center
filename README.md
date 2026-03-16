@@ -44,6 +44,7 @@ docker compose -f compose.production.yml --env-file .env.production up -d --buil
 Set these values in `.env.production` before you start:
 - `OPENCLAW_HOME_HOST`
 - `CODEX_HOME_HOST`
+- `WORKSPACE_ROOT_HOST`
 - `GATEWAY_URL`
 - `LOCAL_API_TOKEN` if you want protected routes available while local token auth stays enabled
 
@@ -65,6 +66,6 @@ Since `nginx-proxy-manager` already runs on a different machine, point it at the
 If the proxy must reach the container over a private network, make sure the Docker host firewall allows inbound traffic to port `4310` from the proxy machine.
 
 ## Runtime notes
-- The app reads OpenClaw and Codex data from mounted directories. The production compose file mounts them read-only into `/data/openclaw` and `/data/codex`.
-- If your billing snapshot or workspace layout is non-standard, set `OPENCLAW_SUBSCRIPTION_SNAPSHOT_PATH`, `OPENCLAW_WORKSPACE_ROOT`, or `OPENCLAW_AGENT_ROOT` in `.env.production`.
+- The app reads OpenClaw, Codex, and workspace data from mounted directories. The production compose file mounts them read-only into `/data/openclaw`, `/data/codex`, and `/data/workspace`.
+- If your billing snapshot is non-standard, set `OPENCLAW_SUBSCRIPTION_SNAPSHOT_PATH` in `.env.production`.
 - The full operator guide remains in [README.en.md](README.en.md).

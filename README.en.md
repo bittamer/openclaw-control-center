@@ -101,6 +101,7 @@ cp .env.production.example .env.production
 3. Review `.env.production` and set at least:
 - `OPENCLAW_HOME_HOST`
 - `CODEX_HOME_HOST`
+- `WORKSPACE_ROOT_HOST`
 - `GATEWAY_URL`
 - `LOCAL_API_TOKEN` if you want protected routes enabled behind local token auth
 

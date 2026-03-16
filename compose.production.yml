@@ -27,11 +27,12 @@ services:
       OPENCLAW_CONFIG_PATH: /data/openclaw/openclaw.json
       CODEX_HOME: /data/codex
       OPENCLAW_SUBSCRIPTION_SNAPSHOT_PATH: ${OPENCLAW_SUBSCRIPTION_SNAPSHOT_PATH:-/data/openclaw/subscription.json}
-      OPENCLAW_WORKSPACE_ROOT: ${OPENCLAW_WORKSPACE_ROOT:-}
-      OPENCLAW_AGENT_ROOT: ${OPENCLAW_AGENT_ROOT:-}
+      OPENCLAW_WORKSPACE_ROOT: /data/workspace
+      OPENCLAW_AGENT_ROOT: /data/workspace
     volumes:
       - ${OPENCLAW_HOME_HOST:?set OPENCLAW_HOME_HOST in .env.production}:/data/openclaw:ro
       - ${CODEX_HOME_HOST:?set CODEX_HOME_HOST in .env.production}:/data/codex:ro
+      - ${WORKSPACE_ROOT_HOST:?set WORKSPACE_ROOT_HOST in .env.production}:/data/workspace:ro
       - occ-runtime:/app/runtime
 
 volumes:
