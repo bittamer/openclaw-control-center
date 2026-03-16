@@ -14,12 +14,12 @@ test("ui language preference persists after save and reload", async () => {
   try {
     await saveUiPreferences({
       ...defaultUiPreferences(),
-      language: "zh",
+      language: "en",
       updatedAt: new Date().toISOString(),
     });
 
     const loaded = await loadUiPreferences();
-    assert.equal(loaded.preferences.language, "zh");
+    assert.equal(loaded.preferences.language, "en");
   } finally {
     if (original === undefined) {
       await rm(UI_PREFERENCES_PATH, { force: true });

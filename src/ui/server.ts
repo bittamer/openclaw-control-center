@@ -150,9 +150,9 @@ const LONG_TERM_MEMORY_FILE_CANDIDATES = [
   join(OPENCLAW_HOME_DIR, "memory", "MEMORY.md"),
 ];
 const DOC_HUB_DIR_CANDIDATES = [
-  { dir: DOCS_DIR, category: "项目文档" },
-  { dir: join(process.cwd(), "runtime", "digests"), category: "日报文档" },
-  { dir: join(process.cwd(), "runtime", "evidence"), category: "证据报告" },
+  { dir: DOCS_DIR, category: "Project docs" },
+  { dir: join(process.cwd(), "runtime", "digests"), category: "Daily digests" },
+  { dir: join(process.cwd(), "runtime", "evidence"), category: "Evidence reports" },
 ];
 const DOC_HUB_CHAT_INDEX_PATH = join(process.cwd(), "runtime", "doc-hub-chat.json");
 const HTML_HEAVY_CACHE_TTL_MS = 3_000;
@@ -906,7 +906,7 @@ export function startUiServer(port: number, toolClient: ToolClient): Server {
         const section = legacySection ?? resolveDashboardSection(url.searchParams);
         const resolvedLanguage = resolveUiLanguage(url.searchParams, prefs.preferences.language);
         const hasExplicitLanguage = hasAnyQueryKey(url.searchParams, ["lang"]);
-        const language: UiLanguage = hasExplicitLanguage ? resolvedLanguage : "zh";
+        const language: UiLanguage = hasExplicitLanguage ? resolvedLanguage : prefs.preferences.language;
         const compactStatusStrip = resolveCompactStatusStrip(url.searchParams, prefs.preferences.compactStatusStrip);
         const usageView = resolveUsageView(url.searchParams);
         const search = resolveDashboardSearchQuery(url.searchParams);
@@ -9064,10 +9064,11 @@ function resolveUsageView(searchParams: URLSearchParams): UsageView {
 }
 
 function resolveUiLanguage(searchParams: URLSearchParams, fallback: UiLanguage): UiLanguage {
+  const defaultLanguage: UiLanguage = fallback === "zh" ? "en" : fallback;
   const raw = normalizeQueryString(searchParams.get("lang"), "lang", 8, false);
-  if (!raw) return fallback;
+  if (!raw) return defaultLanguage;
   const normalized = raw.trim().toLowerCase();
-  return isUiLanguage(normalized) ? normalized : fallback;
+  return isUiLanguage(normalized) ? normalized : defaultLanguage;
 }
 
 function mergeUiPreferencesPatch(current: UiPreferences, payload: Record<string, unknown>): UiPreferences {
@@ -9085,7 +9086,7 @@ function mergeUiPreferencesPatch(current: UiPreferences, payload: Record<string,
     }
     const normalizedLanguage = payload.language.trim().toLowerCase();
     if (!isUiLanguage(normalizedLanguage)) {
-      throw new RequestValidationError("language must be one of: en, zh", 400);
+      throw new RequestValidationError('language must be "en".', 400);
     }
     next.language = normalizedLanguage;
   }
@@ -10262,13 +10263,9 @@ function hasAnyQueryKey(searchParams: URLSearchParams, keys: string[]): boolean 
 }
 
 function renderLanguageToggle(filters: TaskQueryFilters, options: DashboardOptions): string {
-  const enHref = buildHomeHref(filters, options.compactStatusStrip, options.section, "en", options.usageView);
-  const zhHref = buildHomeHref(filters, options.compactStatusStrip, options.section, "zh", options.usageView);
-  const enClass = options.language === "en" ? " class=\"active\"" : "";
-  const zhClass = options.language === "zh" ? " class=\"active\"" : "";
-  const label = pickUiText(options.language, "Language:", "语言：");
-  const zhLabel = pickUiText(options.language, "中文", "中文");
-  return `<div class="meta lang-toggle">${label} <a${enClass} href="${escapeHtml(enHref)}">EN</a> / <a${zhClass} href="${escapeHtml(zhHref)}">${zhLabel}</a></div>`;
+  void filters;
+  void options;
+  return "";
 }
 
 function buildHomeHref(

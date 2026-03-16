@@ -37,7 +37,7 @@ export interface UiPreferencesLoadResult {
 
 export function defaultUiPreferences(now = new Date().toISOString()): UiPreferences {
   return {
-    language: "zh",
+    language: "en",
     compactStatusStrip: true,
     quickFilter: "all",
     taskFilters: {},
@@ -91,7 +91,7 @@ export function isUiQuickFilter(input: string): input is UiQuickFilter {
 }
 
 export function isUiLanguage(input: string): input is UiLanguage {
-  return input === "en" || input === "zh";
+  return input === "en";
 }
 
 function normalizeUiPreferences(input: unknown): { preferences: UiPreferences; issues: string[] } {
@@ -113,7 +113,7 @@ function normalizeUiPreferences(input: unknown): { preferences: UiPreferences; i
     if (isUiLanguage(normalizedLanguage)) {
       language = normalizedLanguage;
     } else {
-      issues.push("language must be one of: en, zh");
+      issues.push('language must be "en"');
     }
   } else if (obj.language !== undefined) {
     issues.push("language must be a string");

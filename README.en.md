@@ -1,12 +1,10 @@
-> 中文用户可在这里切换：[打开中文 README](README.md)
-
 # OpenClaw Control Center
 
 <img src="docs/assets/overview-hero-en.png" alt="OpenClaw Control Center overview hero screenshot" width="1200" />
 
 Safety-first local control center for OpenClaw.
 
-Language: **English** | [中文](README.md)
+Primary documentation language: **English**
 
 ## Why this exists
 - One local place to see whether OpenClaw is healthy, busy, blocked, or drifting.
@@ -81,12 +79,46 @@ npm run dev:ui
 ```
 
 Then open:
-- `http://127.0.0.1:4310/?section=overview&lang=en`
-- `http://127.0.0.1:4310/?section=overview&lang=zh`
+- `http://127.0.0.1:4310/?section=overview`
 
 Notes:
 - Prefer `npm run dev:ui`; it is the more reliable cross-platform entry, especially on Windows shells.
 - `npm run dev` only performs one monitor pass and does not start the HTTP UI.
+
+## Docker production
+This app can run as a single production container behind an external reverse proxy. No extra web server is needed inside the image.
+
+1. Build the image:
+```bash
+docker build -t openclaw-control-center:production .
+```
+
+2. Prepare production env values:
+```bash
+cp .env.production.example .env.production
+```
+
+3. Review `.env.production` and set at least:
+- `OPENCLAW_HOME_HOST`
+- `CODEX_HOME_HOST`
+- `GATEWAY_URL`
+- `LOCAL_API_TOKEN` if you want protected routes enabled behind local token auth
+
+4. Start the container:
+```bash
+docker compose -f compose.production.yml --env-file .env.production up -d --build
+```
+
+5. Point your reverse proxy at the Docker host:
+- domain: `occ.hubbinash.net`
+- forward scheme: `http`
+- forward host/IP: your Docker host
+- forward port: `4310`
+
+Notes:
+- The container binds to `0.0.0.0:4310` so a remote reverse proxy can reach it.
+- `READONLY_MODE`, approval guards, and import guards stay on their safe defaults in the production compose file.
+- The app health endpoint is `GET /healthz`.
 
 ## Section-by-section tour
 
@@ -196,7 +228,6 @@ The best first-run path is not manual setup. The best path is to give your own O
 
 If you want a copy-ready standalone file, use:
 - [INSTALL_PROMPT.en.md](INSTALL_PROMPT.en.md)
-- [INSTALL_PROMPT.md](INSTALL_PROMPT.md)
 
 It should handle:
 - environment checks
@@ -382,8 +413,7 @@ npm run dev:ui
 ```
 
 Then open:
-- English UI: `http://127.0.0.1:4310/?section=overview&lang=en`
-- Chinese UI: `http://127.0.0.1:4310/?section=overview&lang=zh`
+- UI: `http://127.0.0.1:4310/?section=overview`
 
 If you changed `UI_PORT`, replace `4310` with your chosen port.
 If a reverse proxy, container, or another machine must reach the UI, also set `UI_BIND_ADDRESS=0.0.0.0`.
@@ -514,7 +544,7 @@ If you are publishing the repository itself, not just installing it, use this se
 - Long titles and session keys now wrap/clamp inside the card instead of pushing badges out of place.
 
 ## Dashboard highlights (Phase 112, Staff status freshness semantics)
-- Staff `Working / 工作中` now means live execution, not just “still owns unfinished tasks”.
+- Staff `Working` now means live execution, not just “still owns unfinished tasks”.
 - Agents with backlog but no live session now stay in standby semantics instead of looking falsely active.
 - Staff work labels now separate:
   - live work: `Working on / 正在处理什么`

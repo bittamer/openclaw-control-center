@@ -338,7 +338,7 @@ test("dashboard keeps global visibility as overview-only block", async () => {
   assert(source.includes("if (typeof item.toolEventCount === \"number\") return sum + item.toolEventCount;"));
   assert(source.includes("const scheduleSignalText = scheduleRow?.currentAction ?? noSignalText;"));
   assert(source.includes("<small>${escapeHtml(scheduleSignalText)}</small>"));
-  assert(source.includes('const language: UiLanguage = hasExplicitLanguage ? resolvedLanguage : "zh";'));
+  assert(source.includes("const language: UiLanguage = hasExplicitLanguage ? resolvedLanguage : prefs.preferences.language;"));
   assert(!source.includes("const recentToolCallsCount = sessionPreview.items.filter((item) => item.latestKind === \"tool_event\").length;"));
   assert(source.includes("const languageToggle = renderLanguageToggle(filters, options);"));
   assert(source.includes("${languageToggle}"));

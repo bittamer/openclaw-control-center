@@ -1,0 +1,38 @@
+services:
+  occ:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: openclaw-control-center:production
+    restart: unless-stopped
+    ports:
+      - "4310:4310"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      NODE_ENV: production
+      UI_MODE: "true"
+      MONITOR_CONTINUOUS: "true"
+      UI_BIND_ADDRESS: "0.0.0.0"
+      UI_PORT: "4310"
+      GATEWAY_URL: ${GATEWAY_URL:-ws://host.docker.internal:18789}
+      READONLY_MODE: "true"
+      APPROVAL_ACTIONS_ENABLED: "false"
+      APPROVAL_ACTIONS_DRY_RUN: "true"
+      IMPORT_MUTATION_ENABLED: "false"
+      IMPORT_MUTATION_DRY_RUN: "false"
+      LOCAL_TOKEN_AUTH_REQUIRED: ${LOCAL_TOKEN_AUTH_REQUIRED:-true}
+      LOCAL_API_TOKEN: ${LOCAL_API_TOKEN:-}
+      OPENCLAW_HOME: /data/openclaw
+      OPENCLAW_CONFIG_PATH: /data/openclaw/openclaw.json
+      CODEX_HOME: /data/codex
+      OPENCLAW_SUBSCRIPTION_SNAPSHOT_PATH: ${OPENCLAW_SUBSCRIPTION_SNAPSHOT_PATH:-/data/openclaw/subscription.json}
+      OPENCLAW_WORKSPACE_ROOT: ${OPENCLAW_WORKSPACE_ROOT:-}
+      OPENCLAW_AGENT_ROOT: ${OPENCLAW_AGENT_ROOT:-}
+    volumes:
+      - ${OPENCLAW_HOME_HOST:?set OPENCLAW_HOME_HOST in .env.production}:/data/openclaw:ro
+      - ${CODEX_HOME_HOST:?set CODEX_HOME_HOST in .env.production}:/data/codex:ro
+      - occ-runtime:/app/runtime
+
+volumes:
+  occ-runtime:
